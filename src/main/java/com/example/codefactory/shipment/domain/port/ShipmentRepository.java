@@ -7,5 +7,9 @@ import java.util.Optional;
 public interface ShipmentRepository {
 	Optional<Shipment> findById(Long id);
 
+	Optional<Shipment> findByTrackingCode(String trackingCode);
+
+	boolean existsByTrackingCode(String trackingCode);
+
 	Shipment save(Shipment shipment);
 }

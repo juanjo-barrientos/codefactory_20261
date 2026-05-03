@@ -33,8 +33,18 @@ public class ShipmentRepositoryAdapter implements ShipmentRepository {
 	}
 
 	@Override
+	public Optional<Shipment> findByTrackingCode(String trackingCode) {
+		return shipmentJpaRepository.findByCodigoRastreo(trackingCode).map(shipmentMapper::toDomain);
+	}
+
+	@Override
+	public boolean existsByTrackingCode(String trackingCode) {
+		return shipmentJpaRepository.existsByCodigoRastreo(trackingCode);
+	}
+
+	@Override
 	public Shipment save(Shipment shipment) {
-		ShipmentEntity entity = shipmentJpaRepository.findById(shipment.getId()).orElseThrow();
+		ShipmentEntity entity = shipment.getId() == null ? createEntity(shipment) : shipmentJpaRepository.findById(shipment.getId()).orElseThrow();
 
 		if (shipment.getSenderId() != null) {
 			PersonEntity sender = personJpaRepository.findById(shipment.getSenderId()).orElseThrow();
@@ -43,5 +53,23 @@ public class ShipmentRepositoryAdapter implements ShipmentRepository {
 
 		ShipmentEntity saved = shipmentJpaRepository.save(entity);
 		return shipmentMapper.toDomain(saved);
+	}
+
+	private ShipmentEntity createEntity(Shipment shipment) {
+		PersonEntity sender = personJpaRepository.findById(shipment.getSenderId()).orElseThrow();
+		PersonEntity recipient = personJpaRepository.findById(shipment.getRecipientId()).orElseThrow();
+		return new ShipmentEntity(
+				sender,
+				recipient,
+				shipment.getTipoServicio(),
+				shipment.getNivelPrioridad(),
+				shipment.getCodigoRastreo(),
+				shipment.getEstadoActual(),
+				shipment.getFechaEnvio(),
+				shipment.getFechaEstimada(),
+				shipment.getFechaActualizacion(),
+				shipment.getCostoTotal(),
+				shipment.getInstruccionesEnvio()
+		);
 	}
 }

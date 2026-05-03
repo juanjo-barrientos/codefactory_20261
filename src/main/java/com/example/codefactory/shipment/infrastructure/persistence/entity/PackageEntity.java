@@ -7,7 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
@@ -20,20 +20,20 @@ public class PackageEntity {
 	@Column(name = "id_paquete", nullable = false)
 	private Long id;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "shipment_id", nullable = false, unique = true)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "shipment_id", nullable = false)
 	private ShipmentEntity shipment;
 
 	@Column(name = "peso", nullable = false, precision = 10, scale = 2)
 	private BigDecimal peso;
 
-	@Column(name = "largo", nullable = false, precision = 10, scale = 2)
+	@Column(name = "largo", precision = 10, scale = 2)
 	private BigDecimal largo;
 
-	@Column(name = "ancho", nullable = false, precision = 10, scale = 2)
+	@Column(name = "ancho", precision = 10, scale = 2)
 	private BigDecimal ancho;
 
-	@Column(name = "alto", nullable = false, precision = 10, scale = 2)
+	@Column(name = "alto", precision = 10, scale = 2)
 	private BigDecimal alto;
 
 	@Column(name = "descripcion", length = 500)

@@ -9,6 +9,19 @@ public class ShipmentMapper {
 	public Shipment toDomain(ShipmentEntity entity) {
 		String senderId = entity.getSender() != null ? entity.getSender().getId() : null;
 		String recipientId = entity.getRecipient() != null ? entity.getRecipient().getId() : null;
-		return new Shipment(entity.getId(), senderId, recipientId);
+		return new Shipment(
+				entity.getId(),
+				senderId,
+				recipientId,
+				entity.getTipoServicio(),
+				entity.getNivelPrioridad(),
+				entity.getCodigoRastreo(),
+				entity.getEstadoActual(),
+				entity.getFechaEnvio(),
+				entity.getFechaEstimada(),
+				entity.getFechaActualizacion(),
+				entity.getCostoTotal(),
+				entity.getInstruccionesEnvio()
+		);
 	}
 }

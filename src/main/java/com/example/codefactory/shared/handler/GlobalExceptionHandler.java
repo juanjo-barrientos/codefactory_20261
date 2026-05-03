@@ -9,11 +9,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+	private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
 	@ExceptionHandler(NotFoundException.class)
 	public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException ex, HttpServletRequest request) {
 		return build(HttpStatus.NOT_FOUND, ex.getMessage(), request.getRequestURI());
@@ -29,9 +35,19 @@ public class GlobalExceptionHandler {
 		return build(HttpStatus.BAD_REQUEST, "Validation failed", request.getRequestURI());
 	}
 
+	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+	public ResponseEntity<ErrorResponse> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
+		return build(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(), request.getRequestURI());
+	}
+
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorResponse> handleGeneric(Exception ex, HttpServletRequest request) {
-		return build(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error", request.getRequestURI());
+		log.error("Unhandled exception for {}", request.getRequestURI(), ex);
+		String message = ex.getClass().getSimpleName();
+		if (ex.getMessage() != null && !ex.getMessage().isBlank()) {
+			message = message + ": " + ex.getMessage();
+		}
+		return build(HttpStatus.INTERNAL_SERVER_ERROR, message, request.getRequestURI());
 	}
 
 	private ResponseEntity<ErrorResponse> build(HttpStatus status, String message, String path) {

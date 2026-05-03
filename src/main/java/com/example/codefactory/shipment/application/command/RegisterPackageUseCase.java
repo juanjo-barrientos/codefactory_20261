@@ -5,7 +5,6 @@ import com.example.codefactory.shipment.application.dto.RegisterPackageResponse;
 import com.example.codefactory.shipment.domain.model.Package;
 import com.example.codefactory.shipment.domain.port.PackageRepository;
 import com.example.codefactory.shipment.domain.port.ShipmentRepository;
-import com.example.codefactory.shared.exception.ConflictException;
 import com.example.codefactory.shared.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,10 +23,6 @@ public class RegisterPackageUseCase {
 	public RegisterPackageResponse register(Long shipmentId, RegisterPackageRequest request) {
 		if (shipmentRepository.findById(shipmentId).isEmpty()) {
 			throw new NotFoundException("Shipment not found: " + shipmentId);
-		}
-
-		if (packageRepository.findByShipmentId(shipmentId).isPresent()) {
-			throw new ConflictException("Package already registered for shipment: " + shipmentId);
 		}
 
 		Package toSave = new Package(

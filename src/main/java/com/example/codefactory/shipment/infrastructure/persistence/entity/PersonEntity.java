@@ -15,13 +15,13 @@ public class PersonEntity {
 	@Column(name = "nombre", nullable = false)
 	private String nombre;
 
-	@Column(name = "telefono", nullable = false)
+	@Column(name = "telefono")
 	private String telefono;
 
-	@Column(name = "correo_electronico", nullable = false)
+	@Column(name = "correo_electronico", unique = true)
 	private String correoElectronico;
 
-	@Column(name = "direccion", nullable = false)
+	@Column(name = "direccion")
 	private String direccion;
 
 	@Column(name = "referencias")

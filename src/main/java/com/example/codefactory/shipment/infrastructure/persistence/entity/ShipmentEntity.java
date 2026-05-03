@@ -8,11 +8,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "shipments")
@@ -23,11 +24,11 @@ public class ShipmentEntity {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "sender_id")
+	@JoinColumn(name = "sender_id", nullable = false)
 	private PersonEntity sender;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "recipient_id")
+	@JoinColumn(name = "recipient_id", nullable = false)
 	private PersonEntity recipient;
 
 	@Column(name = "tipo_servicio", nullable = false)
@@ -57,8 +58,8 @@ public class ShipmentEntity {
 	@Column(name = "instrucciones_envio", length = 1000)
 	private String instruccionesEnvio;
 
-	@OneToOne(mappedBy = "shipment", fetch = FetchType.LAZY)
-	private PackageEntity aPackage;
+	@OneToMany(mappedBy = "shipment", fetch = FetchType.LAZY)
+	private List<PackageEntity> packages;
 
 	protected ShipmentEntity() {
 	}
